@@ -1,24 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import "./scss/App.scss";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import MainLayout from "./layout/MainLayout";
+import StatsLive from "./pages/StatsLive";
+import Blank from "./pages/Blank";
+import LoginForm from "./pages/signIn/LoginForm";
+import React, { useState, useEffect } from "react";
+import Cookies from "js-cookie";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const isLoggedIn = Cookies.get("loggedIn") === "loggedIn";
+    setLoggedIn(isLoggedIn);
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        {loggedIn ? (
+          <Route path="/" element={<MainLayout />}>
+            <Route index element={<Blank />} />
+            <Route path="/StateLive" element={<StatsLive />} />
+          </Route>
+        ) : (
+          <Route path="*" element={<LoginForm />} />
+        )}
+      </Routes>
+    </BrowserRouter>
   );
 }
 
