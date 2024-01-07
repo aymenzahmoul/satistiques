@@ -8,7 +8,17 @@
         margin-bottom: $mobileSpacing;
     }
 }
+@media (min-width: 900px) {
+    .sidebar-toggle {
+        padding-left: 75%;
 
+    }
+}
+@media (min-width: 400px) and (max-width: 900px) {
+    .sidebar-toggle {
+        padding-left: 50%;
+    }
+}
 .sidebar-toggle {
     --size: 40px;
     width: var(--size);

@@ -28,8 +28,9 @@ const TopNav = () => {
       <UserInfo user={UserSt} />
       <div className="sidebar-toggle" onClick={openSidebar}>
         <FontAwesomeIcon icon={faBars} />{" "}
-        {/* Use the FontAwesomeIcon component */}
+        
       </div>
+      <hr></hr>
     </div>
   );
 };

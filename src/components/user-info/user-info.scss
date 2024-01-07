@@ -2,7 +2,7 @@
 
 .user-info {
     @include flex(center, flex-start);
-    background-color: $mainBg;
+    background-color: white;
     border-radius: $borderRadius;
     height: 50px;
     width: max-content;

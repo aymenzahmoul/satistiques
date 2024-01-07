@@ -1,16 +1,44 @@
 @use '../../scss/abstracts/' as *;
 @use 'sass:math';
 
+
+@media only screen and (max-width: 580px) {
+
+    .sidebar__menu__item__txt {
+        margin-left: 0%;
+        width: 140px;
+        font-size: 14px;    
+        margin-left: -20px; /* Reset margin for mobile view */
+    }
+    .sidebar__menu__item__icon{
+        margin-left:-20px;
+    }
+    
+}
+
+@media only screen and (min-width:1367px) {
+.sidebar__menu__item__txt {
+    margin-left: -50px;
+
+  }}
+  .sidebar__menu__item{
+    text-decoration: none;
+
+  }
+
+  
 .sidebar {
     @include flex(stretch, flex-start);
     flex-direction: column;
     color: $txtColor;
     width: $sideBarWidth;
-    background-color: $mainBg;
-    height: 100vh;
+    background-color: rgb(248, 246, 246);
+    height: 100vh;  
     position: fixed;
     top: 0;
     z-index: 100;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.717);
+
 
     @include tablet {
         width: 100vw;

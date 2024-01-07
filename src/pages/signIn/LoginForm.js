@@ -14,7 +14,8 @@ const LoginForm = () => {
   });
   const navigate = useNavigate();
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault();
     const newErrors = {};
     if (loginData.Login.trim() === '') {
       newErrors.Login = 'Le champ Nom d\'utilisateur ne peut pas être vide.';
@@ -23,7 +24,6 @@ const LoginForm = () => {
       newErrors.Password = 'Le champ Mot de passe ne peut pas être vide.';
     }
 
-    // Si des erreurs sont détectées, mettez à jour l'état des erreurs
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
     } else {
@@ -38,14 +38,13 @@ const LoginForm = () => {
           window.location.reload();
         } else {
           console.error("Authentication failed");
-          console.log(loginData);
-          setErrorMessage('Please enter your username and password.');
+          setErrorMessage('Password or username incorrect.');
           setTest('false')
           
         }
       } catch (error) {
         console.error("Error during login:", error);
-        setErrorMessage('Please enter your username and password.');
+        setErrorMessage('Password or username not correct.');
         setTest('false')
       }
     }
@@ -62,7 +61,6 @@ const LoginForm = () => {
       ...loginData,
       [name]: value,
     });
-    // Réinitialisez les erreurs lorsque l'utilisateur commence à taper dans un champ
     setErrors({
       ...errors,
       [name]: '',
@@ -72,52 +70,9 @@ const LoginForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add your login logic here using the 'username' and 'password' states
   };
   return (
-    // <div className="container">
-    //   <div className="img">
-    //     <img src={backgroundImg} alt="background" />
-    //   </div>
-    //   <div className="login-content">
-    //     <div className="form">
-    //       <img src={avatarImg} alt="avatar" />
-    //       <div className="input-div one">
-    //         <div className="i">
-    //           <i className="fas fa-user"></i>
-    //         </div>
-    //         <div className="div">
-    //           <input
-    //             placeholder="Username"
-    //             className="input"
-    //             name="Login"
-    //             value={loginData.Login}
-    //             onChange={handleChange}
-    //           />
-    //         </div>
-    //       </div>
-    //       <div className="input-div pass">
-    //         <div className="i">
-    //           <i className="fas fa-lock"></i>
-    //         </div>
-    //         <div className="div">
-    //           <input
-    //             placeholder="Password"
-    //             type="password"
-    //             className="input"
-    //             name="Password"
-    //             value={loginData.Password}
-    //             onChange={handleChange}
-    //           />
-    //         </div>
-    //       </div>
-    //       <button type="button" className="btn" onClick={handleLogin}>
-    //         Login
-    //       </button>
-    //     </div>
-    //   </div>
-    //   <img className="wave" src={waveImg} alt="wave" />
-    // </div>
+  
     <div className="container">
     <div className="row">
       <div className="col-md-6 offset-md-3">
@@ -138,7 +93,7 @@ const LoginForm = () => {
                 className={`form-control ${errors.Login && 'is-invalid'}`}
                 id="Username"
                 aria-describedby="emailHelp"
-                placeholder="User Name"
+                placeholder="UserName"
                 name="Login"
                 value={loginData.Login}
                 onChange={handleChange}
@@ -148,20 +103,21 @@ const LoginForm = () => {
             <div className="mb-3">
               <input
                 type="password"
-                c className={`form-control ${errors.Password && 'is-invalid'}`}
+              className={`form-control ${errors.Password && 'is-invalid'}`}
                 id="password"
                 placeholder="password"
                 name="Password"
                 value={loginData.Password}
                 onChange={handleChange}
               />
+              
             </div>
             <div className="text-center">
               <button type="submit"  className="btn btn-color px-5 mb-5 w-100"  style={{ backgroundColor: '#339af0', color: '#ffffff' }}onClick={handleLogin}>
                 Login
               </button>
             </div>      {(test=== 'false') ?(
-      <Alert variant="warning">
+      <Alert variant="danger">
       {errorMessage}
     </Alert>
               ) :(

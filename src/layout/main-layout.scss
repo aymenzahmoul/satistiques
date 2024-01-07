@@ -3,7 +3,7 @@
 .main {
     padding-left: $sideBarWidth;
     overflow-x: hidden;
-
+    background-color: $bodyBg;
     @include tablet {
         padding-left: 0;
         width: 100vw;

@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from "react";
-import "./Css/StatsLive.css";
+import {  CardBody, CardTitle, Container, Row, Col } from "reactstrap";
 import LivestatsService from "../service/livestatsService";
-
+import "primeicons/primeicons.css";
+import "primereact/resources/themes/lara-light-indigo/theme.css";
+import "primereact/resources/primereact.css";
+import "primeflex/primeflex.css";
+import "./index.css";
+import "./Css/buttons.css"
+import { Calendar } from "primereact/calendar";
+import { Button } from 'primereact/button';
+import { Card } from 'primereact/card';
 export default function StatsLive() {
   const [livestats, setLivestats] = useState(null);
-  const [error, setError] = useState(null);
 
+  
   const fetchData = async () => {
     try {
       const data = await LivestatsService.getLivestats();
@@ -13,7 +21,6 @@ export default function StatsLive() {
       localStorage.setItem("cachedData", JSON.stringify(data));
     } catch (error) {
       console.error("Error fetching live stats:", error);
-      setError("Failed to fetch live stats");
     }
   };
 
@@ -21,9 +28,9 @@ export default function StatsLive() {
     const checkBackendAvailability = async () => {
       try {
         await LivestatsService.getLivestats();
-        return true; // Backend is available
+        return true; 
       } catch (error) {
-        return false; // Backend is not available
+        return false; 
       }
     };
 
@@ -32,86 +39,399 @@ export default function StatsLive() {
 
       if (isBackendAvailable) {
         console.log("Backend is available");
-
-        // Fetch data immediately
         fetchData();
 
-        // Set up periodic updates
-        setInterval(fetchData, 60000); // Update every 60 seconds (adjust as needed)
+        const intervalId = setInterval(fetchData, 60000); 
+
+        return () => clearInterval(intervalId); 
       } else {
         console.log("Backend not available");
         const cachedData = localStorage.getItem("cachedData");
-        setInterval(fetchData, 12000);
+
+       
         if (cachedData) {
           setLivestats(JSON.parse(cachedData));
+          const intervalId = setInterval(fetchData, 60000); 
+
+          return () => clearInterval(intervalId); 
         } else {
-          setError("Backend is not available, and no cached data available.");
+          console.log("Backend is not available, and no cached data available.");
         }
       }
     };
 
-    updateDataPeriodically();
+    const fetchDataAndSetInterval = async () => {
+      const cleanupInterval = await updateDataPeriodically();
+
+      return cleanupInterval;
+    };
+
+    fetchDataAndSetInterval();
   }, []);
+
+
+  const [date1, setDate1] = useState(null);
+
+  
+
+
+  const data = () => {
+    if (date1 instanceof Date) {
+      const dayOfMonth = date1.getDate();
+      const month = date1.toLocaleString('default', { month: 'long' });
+      const year = date1.getFullYear();
+      alert(` ${dayOfMonth} ${month} ${year}`);
+    } else {
+      alert("Please select a valid date");
+    }
+  };
+
+ 
+
   return (
-    <div>
-      {livestats && (
-        <>
-          <hr></hr>
-          <h2 className="titleCA">Vue Globale C.A </h2>
-          <div className="container2">
-            <div className="box2">
-              <div className="title2">TotalH</div>
-              <div className="value2">{livestats.TotalHT} $</div>
-            </div>
-            <div className="box2">
-              <div className="title2">TVA</div>
-              <div className="value2">{livestats.TVA} $</div>
-            </div>
-            <div className="box2">
-              <div className="title2">TotalTTC</div>
-              <div className="value2">{livestats.TotalTTC} $</div>
-            </div>
-          </div>
+    <div >
+<div className="d-flex justify-content-center align-items-center" >
+  <div  >
+    <div className="card-stats mb-4 mb-xl-0">
+      <div className="field col-12 md:col-4">
+        <label htmlFor="icon"></label><br></br>
+        <Calendar
+          id="icon"
+          value={date1}
+          onChange={(e) => setDate1(e.value)}
+          style={{
+        
+            color: 'white',
+            border: 'none',
+           
+            padding: '2px 7px',
+           
+          }}
+        />
+        <Button   style={{
+    backgroundColor: '#0061B8',
+    color: 'white',
+    borderRadius: '5px',
+    padding: '1px 7px',
+    
+  }}className="slack" onClick={data}>
+          <i className="pi pi-slack px-3"></i>
+          <span className="px-3">Date</span>
+        </Button>
+      </div>
+    </div>
+  </div>
+</div>
 
-          <hr></hr>
-          <h2 className="titleCA"> Réparitition CA par mode de paiements </h2>
-          <div className="container2">
-            <div className="box3">
-              <div className="title2">Especes</div>
-              <div className="value2">{livestats.Especes}35 $</div>
-            </div>
-            <div className="box3">
-              <div className="title2">Carte bancaire</div>
-              <div className="value2">{livestats.CarteBancaire} $</div>
-            </div>
-            <div className="box3">
-              <div className="title2">Cheques</div>
-              <div className="value2">{livestats.Cheques} $</div>
-            </div>
-            <div className="box3">
-              <div className="title2">Ticket Resto</div>
-              <div className="value2">{livestats.TicketResto} $</div>
-            </div>
-          </div>
-
-          <hr></hr>
-          <h2 className="titleCA">Repartition CA par Mode de Consommation </h2>
-          <div className="container2">
-            <div className="box2">
-              <div className="title2">Sur Place</div>
-              <div className="value2">{livestats.SurPlace} $</div>
-            </div>
-            <div className="box2">
-              <div className="title2">A Emporter</div>
-              <div className="value2">{livestats.A_Emporter} $</div>
-            </div>
-            <div className="box2">
-              <div className="title2">Livraison</div>
-              <div className="value2">{livestats.Livraison} $</div>
-            </div>
-          </div>
-        </>
+    <div className="header bg-gradient-info pb-8 pt-5 pt-md-8">
+    <Container fluid>
+    {livestats && (
+      <div className="header-body color blue" >
+     
+        {/* Card stats */}
+        <span className="h2 font-weight-bold mb-0"> Vue Globale C.A</span>
+        <br></br>
+        <br></br>
+        <Row>
+          <Col lg="5" xl="3" md={{ span: 1 }}>
+            <Card className="card-stats mb-4 mb-xl-0">
+              <CardBody>
+                <Row>
+                  <div className="col">
+                    <CardTitle
+                    tag="h5" className="text-uppercase text-muted text-center"
+                    >
+                      TotalH
+                    </CardTitle>
+                    <span className="h2 font-weight-bold mb-0">
+                     
+                    </span>
+                  </div>
+                  <Col className="col-auto">
+                    <div className="icon icon-shape bg-danger text-white rounded-circle shadow">
+                      <i className="fas fa-chart-bar" />
+                    </div>
+                  </Col>
+                </Row>
+                <p className="mt-4 mb-3 ">
+                  <span className="text-success mr-2">
+                
+                  </span>{" "}
+                  <span className="text-nowrap">{livestats.TotalHT}$</span>
+                </p>
+              </CardBody>
+            </Card>
+          </Col>
+          <Col lg="5" xl="3"  md={{ span: 1, offset: 1 }}>
+            <Card className="card-stats mb-4 mb-xl-0">
+              <CardBody>
+                <Row>
+                  <div className="col">
+                    <CardTitle
+                  tag="h5" className="text-uppercase text-muted text-center"
+                    >
+                      TVA
+                    </CardTitle>
+                    <span className="h2 font-weight-bold mb-0"></span>
+                  </div>
+                  <Col className="col-auto">
+                    <div className="icon icon-shape bg-warning text-white rounded-circle shadow">
+                      <i className="fas fa-chart-pie" />
+                    </div>
+                  </Col>
+                </Row>
+                <p className="mt-4 mb-3 ">
+                  <span className="text-danger mr-2">
+                    
+                  </span>{" "}
+                  <span className="text-nowrap">{livestats.TVA}$</span>
+                </p>
+              </CardBody>
+            </Card>
+          </Col>
+          <Col lg="5" xl="3"  md={{ span: 1, offset: 1 }}>
+            <Card className="card-stats mb-4 mb-xl-0">
+              <CardBody>
+                <Row>
+                  <div className="col">
+                    <CardTitle
+                    tag="h5" className="text-uppercase text-muted text-center"
+                    >
+                     TotalTTC
+                    </CardTitle>
+                    <span className="h2 font-weight-bold mb-0"></span>
+                  </div>
+                  <Col className="col-auto">
+                    <div className="icon icon-shape bg-yellow text-white rounded-circle shadow">
+                      <i className="fas fa-users" />
+                    </div>
+                  </Col>
+                </Row>
+                <p className="mt-4 mb-3 ">
+                  <span className="text-warning mr-2">
+                   
+                  </span>{" "}
+                  <span className="text-nowrap">{livestats.TotalTTC}$</span>
+                </p>
+              </CardBody>
+            </Card>
+          </Col>
+        
+        </Row>
+        <br></br>
+        <span className="h2 font-weight-bold mb-0"> Réparitition CA par mode de paiements</span>
+        <br></br>
+        <br></br>
+        <Row>
+          <Col lg="5" xl="3" >
+            <Card className="card-stats mb-4 mb-xl-0">
+              <CardBody>
+                <Row>
+                  <div className="col">
+                    <CardTitle
+                    tag="h5" className="text-uppercase text-muted text-center"
+                    >
+                      Especes
+                    </CardTitle>
+                    <span className="h2 font-weight-bold mb-0">
+                   
+                    </span>
+                  </div>
+                  <Col className="col-auto">
+                    <div className="icon icon-shape bg-danger text-white rounded-circle shadow">
+                      <i className="fas fa-chart-bar" />
+                    </div>
+                  </Col>
+                </Row>
+                <p className="mt-4 mb-3 ">
+                  <span className="text-success mr-2">
+                    
+                  </span>{" "}
+                  <span className="text-nowrap">{livestats.Especes}$</span>
+                </p>
+              </CardBody>
+            </Card>
+          </Col>
+          <Col lg="5" xl="3"  >
+            <Card className="card-stats mb-4 mb-xl-0">
+              <CardBody>
+                <Row>
+                  <div className="col">
+                    <CardTitle
+                      tag="h5" className="text-uppercase text-muted text-center"
+                    >
+                  Carte bancaire
+                    </CardTitle>
+                    <span className="h2 font-weight-bold mb-0"></span>
+                  </div>
+                  <Col className="col-auto">
+                    <div className="icon icon-shape bg-warning text-white rounded-circle shadow">
+                      <i className="fas fa-chart-pie" />
+                    </div>
+                  </Col>
+                </Row>
+                <p className="mt-4 mb-3 ">
+                  <span className="text-danger mr-2">
+                   
+                  </span>{" "}
+                  <span className="text-nowrap">{livestats.CarteBancaire}$</span>
+                </p>
+              </CardBody>
+            </Card>
+          </Col>
+          <Col lg="5" xl="3"  >
+            <Card className="card-stats mb-4 mb-xl-0">
+              <CardBody>
+                <Row>
+                  <div className="col">
+                    <CardTitle
+                 tag="h5" className="text-uppercase text-muted text-center"
+                    >
+                     Cheques
+                    </CardTitle>
+                    <span className="h2 font-weight-bold mb-0"></span>
+                  </div>
+                  <Col className="col-auto">
+                    <div className="icon icon-shape bg-yellow text-white rounded-circle shadow">
+                      <i className="fas fa-users" />
+                    </div>
+                  </Col>
+                </Row>
+                <p className="mt-4 mb-3 ">
+                  <span className="text-warning mr-2">
+                 
+                  </span>{" "}
+                  <span className="text-nowrap">{livestats.Cheques}$</span>
+                </p>
+              </CardBody>
+            </Card>
+          </Col>
+          <Col lg="5" xl="3"  >
+            <Card className="card-stats mb-4 mb-xl-0">
+              <CardBody>
+                <Row>
+                  <div className="col">
+                    <CardTitle
+                tag="h5" className="text-uppercase text-muted text-center"
+                    >
+                   Ticket Resto
+                    </CardTitle>
+                    <span className="h2 font-weight-bold mb-0"></span>
+                  </div>
+                  <Col className="col-auto">
+                    <div className="icon icon-shape bg-yellow text-white rounded-circle shadow">
+                      <i className="fas fa-users" />
+                    </div>
+                  </Col>
+                </Row>
+                <p className="mt-4 mb-3 ">
+                  <span className="text-warning mr-2">
+                    
+                  </span>{" "}
+                  <span className="text-nowrap">{livestats.TicketResto}$</span>
+                </p>
+              </CardBody>
+            </Card>
+          </Col>
+        
+        </Row>
+        <br></br>
+        <span className="h2 font-weight-bold mb-0"> Repartition CA par Mode de Consommation</span>
+        <br></br>
+        <br></br>
+        <Row>
+          <Col lg="5" xl="3" md={{ span: 1 }}>
+            <Card className="card-stats mb-4 mb-xl-0">
+              <CardBody>
+                <Row>
+                  <div className="col">
+                    <CardTitle
+                    tag="h5" className="text-uppercase text-muted text-center"
+                    >
+                     Sur Place
+                    </CardTitle>
+                    <span className="h2 font-weight-bold mb-0">
+                     
+                    </span>
+                  </div>
+                  <Col className="col-auto">
+                    <div className="icon icon-shape bg-danger text-white rounded-circle shadow">
+                      <i className="fas fa-chart-bar" />
+                    </div>
+                  </Col>
+                </Row>
+                <p className="mt-4 mb-3 ">
+                  <span className="text-success mr-2">
+                  
+                  </span>{" "}
+                  <span className="text-nowrap">{livestats.SurPlace}$</span>
+                </p>
+              </CardBody>
+            </Card>
+          </Col>
+          <Col lg="5" xl="3"  md={{ span: 1, offset: 1 }}>
+            <Card className="card-stats mb-4 mb-xl-0">
+              <CardBody>
+                <Row>
+                  <div className="col">
+                    <CardTitle
+                tag="h5" className="text-uppercase text-muted text-center"
+                    >
+                     A Emporter
+                    </CardTitle>
+                    <span className="h2 font-weight-bold mb-0"></span>
+                  </div>
+                  <Col className="col-auto">
+                    <div className="icon icon-shape bg-warning text-white rounded-circle shadow">
+                      <i className="fas fa-chart-pie" />
+                    </div>
+                  </Col>
+                </Row>
+                <p className="mt-4 mb-3 ">
+                  <span className="text-danger mr-2">
+                    
+                  </span>{" "}
+                  <span className="text-nowrap">{livestats.A_Emporter}$</span>
+                </p>
+              </CardBody>
+            </Card>
+          </Col>
+          <Col lg="5" xl="3"  md={{ span: 1, offset: 1 }}>
+            <Card className="card-stats mb-4 mb-xl-0">
+              <CardBody>
+                <Row>
+                  <div className="col">
+                    <CardTitle
+                   tag="h5" className="text-uppercase text-muted text-center"
+                    >
+                      Livraison
+                    </CardTitle>
+                    <span className="h2 font-weight-bold mb-0"></span>
+                  </div>
+                  <Col className="col-auto">
+                    <div className="icon icon-shape bg-yellow text-white rounded-circle shadow">
+                      <i className="fas fa-users" />
+                    </div>
+                  </Col>
+                </Row>
+                <p className="mt-4 mb-3 ">
+                  <span className="text-warning mr-2">
+                    
+                  </span>{" "}
+                  <span tag="h5" className=" text-uppercase text-nowrap text-muted text-center">{livestats.Livraison}$</span>
+                </p>
+              </CardBody>
+            </Card>
+          </Col>
+        
+        </Row>
+    
+      </div>
       )}
+    </Container>
+  </div>
     </div>
   );
 }
+
+

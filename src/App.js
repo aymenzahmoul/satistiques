@@ -7,6 +7,7 @@ import LoginForm from "./pages/signIn/LoginForm";
 import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import StatsParDate from "./pages/StatsParDate";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -23,6 +24,8 @@ function App() {
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Blank />} />
             <Route path="/StateLive" element={<StatsLive />} />
+            <Route path="/StateParDate" element={<StatsParDate/>} />
+
           </Route>
         ) : (
           <Route path="*" element={<LoginForm />} />

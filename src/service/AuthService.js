@@ -28,6 +28,8 @@ const AuthService = {
       throw error;
     }
   },
+  
+ 
 };
 
 export default AuthService;

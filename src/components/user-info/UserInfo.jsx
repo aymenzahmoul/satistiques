@@ -8,7 +8,7 @@ const UserInfo = ({ user }) => {
     return null; // Or render a loading state or handle the absence of user data
   }
 
-  console.log(user);
+ 
 
   return (
     <div className="user-info">

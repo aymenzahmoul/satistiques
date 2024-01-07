@@ -39,8 +39,8 @@
     transition: box-shadow 0.3s ease;
     cursor: pointer;
     text-align: left;
-    background-color: white;
-    border-color: white;
+    background-color: rgb(226, 226, 226);
+    border-color:  rgb(226, 226, 226);
     margin-bottom: 20px; 
 }
 .box3 {
@@ -53,8 +53,8 @@
   transition: box-shadow 0.3s ease;
   cursor: pointer;
   text-align: left;
-  background-color: white;
-  border-color: white;
+  background-color: rgb(226, 226, 226);
+  border-color:  rgb(226, 226, 226);
   margin-bottom: 20px; 
 }
   
@@ -81,10 +81,10 @@
   /* Media query for smaller screens */
   @media (max-width: 600px) {
     .box2 {
-      width: 100%; 
+      width: 85%; 
     }
     .box3 {
-      width: 100%; 
+      width: 85%; 
     }
     .titleCA
     {
